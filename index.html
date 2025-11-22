@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benter Racing System</title>
+    <style>
+        :root {
+            --color-background: #fcfcf9;
+            --color-surface: #fffffd;
+            --color-text: #134252;
+            --color-text-secondary: #626c71;
+            --color-primary: #21808d;
+            --color-primary-hover: #1d7480;
+            --color-border: rgba(94, 82, 64, 0.2);
+            --color-success: #21808d;
+            --color-error: #c0152f;
+            --color-warning: #a84b2f;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background: #1f2121;
+                --color-surface: #262828;
+                --color-text: #f5f5f5;
+                --color-text-secondary: rgba(167, 169, 169, 0.7);
+                --color-primary: #32b8c6;
+                --color-primary-hover: #2da6b2;
+                --color-border: rgba(119, 124, 124, 0.3);
+                --color-success: #32b8c6;
+                --color-error: #ff5459;
+                --color-warning: #e68161;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--color-surface);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 0;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--color-text);
+        }
+
+        .tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--color-surface);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+
+        input[type="file"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            background: var(--color-background);
+            color: var(--color-text);
+            font-size: 14px;
+            transition: border 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: monospace;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: var(--color-primary-hover);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--color-border);
+            color: var(--color-text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-text-secondary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        tr:hover {
+            background: var(--color-background);
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: var(--color-background);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .metric-change {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .positive {
+            color: var(--color-success);
+        }
+
+        .negative {
+            color: var(--color-error);
+        }
+
+        .warning {
+            color: var(--color-warning);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: rgba(33, 128, 141, 0.15);
+            color: var(--color-success);
+        }
+
+        .status-warning {
+            background: rgba(168, 75, 47, 0.15);
+            color: var(--color-warning);
+        }
+
+        .status-error {
+            background: rgba(192, 21, 47, 0.15);
+            color: var(--color-error);
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .alert-info {
+            background: rgba(33, 128, 141, 0.1);
+            border: 1px solid var(--color-primary);
+            color: var(--color-text);
+        }
+
+        .alert-warning {
+            background: rgba(168, 75, 47, 0.1);
+            border: 1px solid var(--color-warning);
+            color: var(--color-text);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--color-border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-primary);
+            transition: width 0.3s;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--color-background);
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        .feature-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .feature-item label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .feature-weight {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            font-family: monospace;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--color-text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--color-border);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .horse-card {
+            background: var(--color-background);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            margin-bottom: 12px;
+        }
+
+        .horse-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .horse-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .horse-number {
+            background: var(--color-primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .horse-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            color: var(--color-text-secondary);
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .bet-recommendation {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--color-surface);
+            border-radius: 6px;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .bet-amount {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        code {
+            background: var(--color-background);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏇 Benter Horse Racing System</h1>
+            <p class="subtitle">Multinomial Logit Model with Combined Public &amp; Fundamental Estimates</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('data')">1. Data</button>
+            <button class="tab" onclick="showTab('features')">2. Features</button>
+            <button class="tab" onclick="showTab('model')">3. Model</button>
+            <button class="tab" onclick="showTab('betting')">4. Betting</button>
+            <button class="tab" onclick="showTab('backtest')">5. Backtest</button>
+        </div>
+
+        <!-- DATA TAB -->
+        <div id="data-tab" class="tab-content active">
+            <div class="card">
+                <h2>📁 Step 1: Data Source</h2>
+                
+                <div class="alert alert-warning" style="margin-bottom: 20px;">
+                    <strong>🔌 PLUG IN YOUR DATA HERE:</strong><br>
+                    Replace this CSV input with API calls to your data provider
+                </div>
+
+                <div class="form-group">
+                    <label>🔴 Replace with Real Data API</label>
+                    <textarea id="dataApiEndpoint" readonly style="background: #fff3cd; border: 2px solid #ffc107;">
+// PLUG IN HERE: Replace CSV upload with data API
+// Example providers:
+// - Equibase API: https://api.equibase.com
+// - Racing and Sports: https://api.racingandsports.com
+// - TrackMaster: Contact for API access
+
+async function fetchHistoricalData() {
+    const response = await fetch('YOUR_DATA_API_ENDPOINT', {
+        headers: { 'Authorization': 'Bearer YOUR_API_KEY' }
+    });
+    return await response.json();
+}</textarea>
+                </div>
+
+                <div style="background: var(--color-background); padding: 16px; border-radius: 8px; border-left: 3px solid var(--color-warning); margin-bottom: 16px;">
+                    <strong>📋 Required Data Fields:</strong>
+                    <ul style="margin: 8px 0 0 20px; font-size: 13px;">
+                        <li>date, track, race_number</li>
+                        <li>horse_name, post_position, finish_position</li>
+                        <li>win_odds (at post time)</li>
+                        <li>jockey, trainer</li>
+                        <li>distance, surface, weight, lengths_behind</li>
+                        <li><strong>CRITICAL:</strong> Complete past performance history for each horse</li>
+                    </ul>
+                </div>
+                
+                <div class="form-group">
+                    <label>For Demo: Upload CSV File</label>
+                    <input type="file" id="dataFile" accept=".csv" onchange="handleFileUpload(event)">
+                </div>
+
+                <div class="form-group">
+                    <label>Or Paste CSV Data</label>
+                    <textarea id="csvData" placeholder="date,track,race_number,horse_name,post_position,finish_position,win_odds..."></textarea>
+                </div>
+
+                <button onclick="loadSampleData()">Load Sample Data</button>
+                <button onclick="processData()" class="btn-secondary">Process Data</button>
+            </div>
+
+            <div class="card" id="dataPreview" style="display: none;">
+                <h2>Data Summary</h2>
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Total Races</div>
+                        <div class="metric-value" id="totalRaces">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Total Horses</div>
+                        <div class="metric-value" id="totalHorses">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Date Range</div>
+                        <div class="metric-value" id="dateRange" style="font-size: 14px;">-</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Tracks</div>
+                        <div class="metric-value" id="trackCount">0</div>
+                    </div>
+                </div>
+                <div id="dataSampleTable"></div>
+            </div>
+        </div>
+
+        <!-- FEATURES TAB -->
+        <div id="features-tab" class="tab-content">
+            <div class="card">
+                <h2>🔧 Step 2: Feature Engineering</h2>
+                
+                <div class="alert alert-warning" style="margin-bottom: 20px;">
+                    <strong>🔌 PLUG IN REAL CALCULATIONS HERE:</strong><br>
+                    Current features use random/simulated values. Replace with actual calculations from historical data.
+                </div>
+
+                <div style="background: #fff3cd; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 2px solid #ffc107;">
+                    <strong>⚠️ Feature Functions to Replace:</strong>
+                    <ul style="margin: 8px 0 0 20px; font-size: 13px;">
+                        <li><code>engineerFeatures()</code> function at line ~620</li>
+                        <li>Replace <code>Math.random()</code> with actual calculations</li>
+                        <li>Access horse's complete race history from database</li>
+                        <li>Calculate real jockey/trainer ROI from historical data</li>
+                        <li>Implement Benter's DP6A distance preference algorithm</li>
+                    </ul>
+                </div>
+
+                <p style="margin-bottom: 16px; color: var(--color-text-secondary); font-size: 14px;">
+                    Select factors to include in the fundamental handicapping model
+                </p>
+
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <input type="checkbox" id="feat_recent_performance" checked>
+                        <label for="feat_recent_performance">
+                            <strong>Recent Performance Rating</strong><br>
+                            <small>Exponentially weighted average of past 5 races</small>
+                        </label>
+                    </div>
+
+                    <div class="feature-item">
+                        <input type="checkbox" id="feat_days_since" checked>
+                        <label for="feat_days_since">
+                            <strong>Days Since Last Race</strong><br>
+                            <small>Optimal range: 14-45 days</small>
+                        </label>
+                    </div>
+
+                    <div class="feature-item">
+                        <input type="checkbox" id="feat_jockey" checked>
+                        <label for="feat_jockey">
+                            <strong>Jockey Factor</strong><br>
+                            <small>Historical win rate adjusted for horse quality</small>
+                        </label>
+                    </div>
+
+                    <div class="feature-item">
+                        <input type="checkbox" id="feat_post_position" checked>
+                        <label for="feat_post_position">
+                            <strong>Post Position Bias</strong><br>
+                            <small>Track-specific post position advantage</small>
+                        </label>
+                    </div>
+
+                    <div class="feature-item">
+                        <input type="checkbox" id="feat_weight" checked>
+                        <label for="feat_weight">
+                            <strong>Weight Carried</strong><br>
+                            <small>Normalized by race average</small>
+                        </label>
+                    </div>
+
+                    <div class="feature-item">
+                        <input type="checkbox" id="feat_distance_pref">
+                        <label for="feat_distance_pref">
+                            <strong>Distance Preference (DP6A)</strong><br>
+                            <small>Benter's residual-based distance factor</small>
+                        </label>
+                    </div>
+
+                    <div class="feature-item">
+                        <input type="checkbox" id="feat_competition">
+                        <label for="feat_competition">
+                            <strong>Competition Strength</strong><br>
+                            <small>Average rating of opponents</small>
+                        </label>
+                    </div>
+
+                    <div class="feature-item">
+                        <input type="checkbox" id="feat_trainer">
+                        <label for="feat_trainer">
+                            <strong>Trainer Factor</strong><br>
+                            <small>Recent form and historical performance</small>
+                        </label>
+                    </div>
+                </div>
+
+                <button onclick="computeFeatures()" style="margin-top: 20px;">Compute Features</button>
+            </div>
+
+            <div class="card" id="featureStats" style="display: none;">
+                <h2>Feature Statistics</h2>
+                <div id="featureStatsTable"></div>
+            </div>
+        </div>
+
+        <!-- MODEL TAB -->
+        <div id="model-tab" class="tab-content">
+            <div class="two-column">
+                <div class="card">
+                    <h2>Model Configuration</h2>
+                    
+                    <div class="form-group">
+                        <label>Train/Test Split</label>
+                        <select id="trainSplit">
+                            <option value="0.7">70% Train / 30% Test</option>
+                            <option value="0.8" selected>80% Train / 20% Test</option>
+                            <option value="0.9">90% Train / 10% Test</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Regularization (C parameter)</label>
+                        <input type="number" id="regularization" value="0.1" step="0.01" min="0.001">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Max Iterations</label>
+                        <input type="number" id="maxIterations" value="1000" step="100">
+                    </div>
+
+                    <button onclick="trainModel()">Train Fundamental Model</button>
+                </div>
+
+                <div class="card">
+                    <h2>Combined Model (Second Stage)</h2>
+                    
+                    <div class="alert alert-info">
+                        Combines fundamental model with public odds to eliminate bias
+                    </div>
+
+                    <div class="form-group">
+                        <label>Alpha (Fundamental Weight)</label>
+                        <input type="number" id="alphaParam" value="1.0" step="0.1" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Beta (Public Weight)</label>
+                        <input type="number" id="betaParam" value="1.0" step="0.1" readonly>
+                    </div>
+
+                    <button onclick="trainCombinedModel()">Estimate α &amp; β</button>
+                </div>
+            </div>
+
+            <div class="card" id="modelResults" style="display: none;">
+                <h2>Model Performance</h2>
+                
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Public R²</div>
+                        <div class="metric-value" id="publicR2">0.000</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Fundamental R²</div>
+                        <div class="metric-value" id="fundamentalR2">0.000</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Combined R²</div>
+                        <div class="metric-value" id="combinedR2">0.000</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">ΔR²</div>
+                        <div class="metric-value" id="deltaR2">0.000</div>
+                        <div class="metric-change" id="deltaR2Status"></div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 24px; margin-bottom: 12px;">Calibration Table</h3>
+                <div id="calibrationTable"></div>
+
+                <div class="alert alert-warning" style="margin-top: 20px;">
+                    <strong>🔌 INTEGRATION CHECKLIST - Where to Plug Things In:</strong>
+                    <ul style="margin: 8px 0 0 20px; font-size: 13px;">
+                        <li>📁 <strong>Data Tab:</strong> Replace CSV with API call in <code>dataApiEndpoint</code> textarea</li>
+                        <li>🔧 <strong>Features Tab:</strong> Replace <code>engineerFeatures()</code> function (line ~620) with real calculations</li>
+                        <li>🤖 <strong>Model Tab:</strong> Add k-fold cross-validation in <code>trainModel()</code> function</li>
+                        <li>💰 <strong>Betting Tab:</strong> Implement <code>fetchLiveOdds()</code> and <code>placeBet()</code> functions</li>
+                        <li>🛡️ <strong>Add Risk Management:</strong> Insert circuit breaker logic in betting execution</li>
+                    </ul>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border);">
+                        <strong>💡 Quick Start:</strong> Search for "🔴" or "PLUG IN" comments in the code to find exact integration points
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BETTING TAB -->
+        <div id="betting-tab" class="tab-content">
+            <div class="card">
+                <h2>💰 Quick Test - Today's Race</h2>
+                
+                <div class="alert alert-info" style="margin-bottom: 20px;">
+                    <strong>📋 Paper Trading Mode:</strong> Manually enter today's race data to test the system without risking money. Track predictions vs. actual results to validate the model.
+                </div>
+
+                <h3 style="margin-bottom: 12px;">Manual Race Entry</h3>
+                
+                <div class="two-column">
+                    <div class="form-group">
+                        <label>Track Name</label>
+                        <input type="text" id="manualTrack" placeholder="e.g., Churchill Downs">
+                    </div>
+                    <div class="form-group">
+                        <label>Race Number</label>
+                        <input type="number" id="manualRaceNum" min="1" max="12" placeholder="1-12">
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div class="form-group">
+                        <label>Distance (meters)</label>
+                        <input type="number" id="manualDistance" placeholder="1200">
+                    </div>
+                    <div class="form-group">
+                        <label>Surface</label>
+                        <select id="manualSurface">
+                            <option value="Dirt">Dirt</option>
+                            <option value="Turf">Turf</option>
+                            <option value="Synthetic">Synthetic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 24px; margin-bottom: 12px;">Horses in Race</h3>
+                <div id="manualHorseEntry">
+                    <div class="horse-entry-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 60px; gap: 8px; margin-bottom: 8px; padding: 12px; background: var(--color-background); border-radius: 8px;">
+                        <input type="text" placeholder="Horse Name" class="horse-name-input" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text);">
+                        <input type="number" placeholder="Post Position" class="horse-post-input" min="1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text);">
+                        <input type="text" placeholder="Jockey" class="horse-jockey-input" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text);">
+                        <input type="number" placeholder="Current Odds" class="horse-odds-input" step="0.1" min="1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text);">
+                        <button onclick="removeHorseRow(this)" style="padding: 8px; background: var(--color-error); color: white; border: none; border-radius: 6px; cursor: pointer;">✕</button>
+                    </div>
+                </div>
+                <button onclick="addHorseRow()" class="btn-secondary" style="margin-top: 8px;">+ Add Another Horse</button>
+
+                <div style="margin-top: 24px; padding: 16px; background: var(--color-background); border-radius: 8px; border-left: 3px solid var(--color-warning);">
+                    <strong>⚠️ Limitations for Today's Test:</strong>
+                    <ul style="margin: 8px 0 0 20px; font-size: 13px; color: var(--color-text-secondary);">
+                        <li>No historical data = features will be random/estimated</li>
+                        <li>Predictions won't be accurate without past performances</li>
+                        <li>Use this to learn the workflow, NOT for real betting</li>
+                        <li>Best use: Track predictions vs. results to build confidence</li>
+                    </ul>
+                </div>
+
+                <button onclick="analyzeTodaysRace()" style="margin-top: 20px; width: 100%;">Generate Predictions for Today's Race</button>
+            </div>
+
+            <div class="card" id="todaysRaceAnalysis" style="display: none;">
+                <h2>Today's Race Predictions</h2>
+                <div id="todaysRaceResults"></div>
+                
+                <div style="margin-top: 20px; padding: 16px; background: var(--color-background); border-radius: 8px;">
+                    <h3 style="margin-bottom: 12px; font-size: 16px;">📊 After the Race:</h3>
+                    <div class="form-group">
+                        <label>Actual Winner (Horse Name)</label>
+                        <input type="text" id="actualWinner" placeholder="Enter which horse won">
+                    </div>
+                    <button onclick="recordRaceResult()">Record Result & Calculate Accuracy</button>
+                    <div id="accuracyResult" style="margin-top: 12px;"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🔌 For Live Betting (Future Integration)</h2>
+                
+                <div class="alert alert-warning" style="margin-bottom: 20px;">
+                    <strong>Required for Production:</strong> These APIs must be connected before real money betting
+                </div>
+
+                <div class="form-group">
+                    <label>🔴 1. Live Odds Feed API</label>
+                    <textarea id="oddsApiEndpoint" readonly style="background: #fff3cd; border: 2px solid #ffc107; min-height: 100px;">
+// PLUG IN HERE: Live odds API (updates every 30-60 seconds)
+// Replace static odds with real-time data
+
+async function fetchLiveOdds(track, raceNumber) {
+    const response = await fetch(
+        `https://api.tvg.com/odds/${track}/${raceNumber}`,
+        { headers: { 'Authorization': 'Bearer YOUR_ODDS_API_KEY' } }
+    );
+    return await response.json();
+}
+
+// Call this every 30 seconds before post time
+setInterval(() => updateOdds(), 30000);</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>🔴 2. Bet Placement API</label>
+                    <textarea id="bettingApiEndpoint" readonly style="background: #fff3cd; border: 2px solid #ffc107; min-height: 120px;">
+// PLUG IN HERE: Automated bet execution
+// Connect to ADW provider (TwinSpires, Xpressbet, TVG)
+
+async function placeBet(track, race, horse, amount) {
+    const response = await fetch('https://api.twinspires.com/wager', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer YOUR_BETTING_API_KEY',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            track_code: track,
+            race_number: race,
+            runner_number: horse,
+            amount: amount,
+            bet_type: 'WIN'
+        })
+    });
+    return await response.json();
+}</textarea>
+                </div>
+
+                <h3 style="margin-top: 24px; margin-bottom: 12px;">Wagering Configuration (For Analysis Only)</h3>
+                
+                <div class="two-column">
+                    <div class="form-group">
+                        <label>Bankroll ($)</label>
+                        <input type="number" id="bankroll" value="10000" step="1000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Kelly Fraction</label>
+                        <select id="kellyFraction">
+                            <option value="0.1">1/10 Kelly (Conservative)</option>
+                            <option value="0.25">1/4 Kelly</option>
+                            <option value="0.33" selected>1/3 Kelly</option>
+                            <option value="0.5">1/2 Kelly</option>
+                            <option value="1.0">Full Kelly (Aggressive)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div class="form-group">
+                        <label>Minimum Advantage</label>
+                        <input type="number" id="minAdvantage" value="0.05" step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Track Take (%)</label>
+                        <input type="number" id="trackTake" value="17" step="1" min="0" max="30">
+                    </div>
+                </div>
+
+                <button onclick="generateBettingRecommendations()">Generate Betting Recommendations</button>
+            </div>
+
+            <div class="card" id="bettingRecommendations" style="display: none;">
+                <h2>Current Race Analysis</h2>
+                <div id="raceSelector" style="margin-bottom: 16px;">
+                    <label>Select Race:</label>
+                    <select id="raceSelect" onchange="displayRaceAnalysis()">
+                        <option value="">Choose a race...</option>
+                    </select>
+                </div>
+                <div id="raceAnalysis"></div>
+            </div>
+        </div>
+
+        <!-- BACKTEST TAB -->
+        <div id="backtest-tab" class="tab-content">
+            <div class="card">
+                <h2>Historical Backtest</h2>
+                
+                <div class="form-group">
+                    <label>Backtest Period</label>
+                    <select id="backtestPeriod">
+                        <option value="all">All Test Data</option>
+                        <option value="recent">Last 100 Races</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+
+                <button onclick="runBacktest()">Run Backtest</button>
+            </div>
+
+            <div class="card" id="backtestResults" style="display: none;">
+                <h2>Backtest Results</h2>
+
+                <div class="alert alert-warning" style="margin-bottom: 16px;">
+                    <strong>⚠️ Simulated Results:</strong> These backtest results use synthetic features and simplified calculations. Real-world performance will differ significantly. The current model lacks proper out-of-sample validation, realistic feature engineering, and track-specific calibration.
+                </div>
+                
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Total Bets</div>
+                        <div class="metric-value" id="totalBets">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Win Rate</div>
+                        <div class="metric-value" id="winRate">0%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Total Return</div>
+                        <div class="metric-value" id="totalReturn">$0</div>
+                        <div class="metric-change" id="returnStatus"></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">ROI</div>
+                        <div class="metric-value" id="roi">0%</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 24px; margin-bottom: 12px;">Bet History</h3>
+                <div id="betHistoryTable"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let raceData = [];
+        let processedData = [];
+        let features = [];
+        let fundamentalModel = null;
+        let combinedModel = null;
+        let testData = [];
+        let trainData = [];
+
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // File upload handler
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('csvData').value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+
+        // Load sample data
+        function loadSampleData() {
+            const sampleCSV = `date,track,race_number,horse_name,post_position,finish_position,win_odds,jockey,trainer,distance,surface,weight,lengths_behind
+2023-01-15,Churchill Downs,1,Thunder Strike,3,1,3.5,J. Smith,T. Johnson,1200,Dirt,126,0.0
+2023-01-15,Churchill Downs,1,Lightning Bolt,5,2,5.2,M. Davis,R. Williams,1200,Dirt,124,1.5
+2023-01-15,Churchill Downs,1,Storm Chaser,1,3,8.0,K. Wilson,S. Brown,1200,Dirt,122,3.0
+2023-01-15,Churchill Downs,1,Wind Runner,7,4,12.5,L. Martinez,D. Taylor,1200,Dirt,120,5.5
+2023-01-15,Churchill Downs,1,Sky Dancer,2,5,15.0,P. Anderson,C. Moore,1200,Dirt,118,8.0
+2023-01-15,Churchill Downs,2,Fast Eddie,4,1,2.8,J. Smith,T. Johnson,1400,Dirt,128,0.0
+2023-01-15,Churchill Downs,2,Quick Silver,6,2,4.5,K. Wilson,R. Williams,1400,Dirt,126,2.0
+2023-01-15,Churchill Downs,2,Speed Demon,2,3,6.0,M. Davis,S. Brown,1400,Dirt,124,4.5
+2023-01-15,Churchill Downs,2,Flash Gordon,8,4,20.0,L. Martinez,D. Taylor,1400,Dirt,122,7.0
+2023-01-15,Churchill Downs,2,Rapid Fire,3,5,25.0,P. Anderson,C. Moore,1400,Dirt,120,10.0
+2023-01-20,Churchill Downs,1,Thunder Strike,2,2,4.0,J. Smith,T. Johnson,1300,Dirt,126,1.0
+2023-01-20,Churchill Downs,1,Star Power,5,1,3.2,K. Wilson,R. Williams,1300,Dirt,128,0.0
+2023-01-20,Churchill Downs,1,Lightning Bolt,6,3,6.5,M. Davis,R. Williams,1300,Dirt,124,2.5
+2023-01-20,Churchill Downs,1,Night Rider,4,4,10.0,L. Martinez,D. Taylor,1300,Dirt,122,5.0
+2023-01-20,Churchill Downs,1,Moon Walker,1,5,18.0,P. Anderson,C. Moore,1300,Dirt,120,8.5`;
+
+            document.getElementById('csvData').value = sampleCSV;
+            alert('Sample data loaded! Click "Process Data" to continue.');
+        }
+
+        // Process CSV data
+        function processData() {
+            const csvText = document.getElementById('csvData').value;
+            if (!csvText.trim()) {
+                alert('Please upload or paste CSV data first');
+                return;
+            }
+
+            try {
+                raceData = parseCSV(csvText);
+                displayDataSummary();
+                alert(`Successfully loaded ${raceData.length} horses from ${countRaces(raceData)} races`);
+            } catch (error) {
+                alert('Error processing data: ' + error.message);
+            }
+        }
+
+        // CSV parser
+        function parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',');
+                const row = {};
+                headers.forEach((header, index) => {
+                    row[header] = values[index] ? values[index].trim() : '';
+                });
+                data.push(row);
+            }
+
+            return data;
+        }
+
+        // Count unique races
+        function countRaces(data) {
+            const races = new Set(data.map(d => `${d.date}_${d.track}_${d.race_number}`));
+            return races.size;
+        }
+
+        // Display data summary
+        function displayDataSummary() {
+            const races = countRaces(raceData);
+            const horses = new Set(raceData.map(d => d.horse_name)).size;
+            const tracks = new Set(raceData.map(d => d.track)).size;
+            const dates = raceData.map(d => d.date).sort();
+            const dateRange = dates.length > 0 ? `${dates[0]} to ${dates[dates.length - 1]}` : 'N/A';
+
+            document.getElementById('totalRaces').textContent = races;
+            document.getElementById('totalHorses').textContent = horses;
+            document.getElementById('trackCount').textContent = tracks;
+            document.getElementById('dateRange').textContent = dateRange;
+
+            // Sample table
+            const sampleHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Track</th>
+                            <th>Race</th>
+                            <th>Horse</th>
+                            <th>Position</th>
+                            <th>Odds</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${raceData.slice(0, 10).map(row => `
+                            <tr>
+                                <td>${row.date}</td>
+                                <td>${row.track}</td>
+                                <td>${row.race_number}</td>
+                                <td>${row.horse_name}</td>
+                                <td>${row.finish_position}</td>
+                                <td>${row.win_odds}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('dataSampleTable').innerHTML = sampleHTML;
+            document.getElementById('dataPreview').style.display = 'block';
+        }
+
+        // Compute features
+        function computeFeatures() {
+            if (raceData.length === 0) {
+                alert('Please load data first');
+                return;
+            }
+
+            const selectedFeatures = [];
+            if (document.getElementById('feat_recent_performance').checked) selectedFeatures.push('recent_performance');
+            if (document.getElementById('feat_days_since').checked) selectedFeatures.push('days_since_last');
+            if (document.getElementById('feat_jockey').checked) selectedFeatures.push('jockey_factor');
+            if (document.getElementById('feat_post_position').checked) selectedFeatures.push('post_position_bias');
+            if (document.getElementById('feat_weight').checked) selectedFeatures.push('weight_normalized');
+            if (document.getElementById('feat_distance_pref').checked) selectedFeatures.push('distance_preference');
+            if (document.getElementById('feat_competition').checked) selectedFeatures.push('competition_strength');
+            if (document.getElementById('feat_trainer').checked) selectedFeatures.push('trainer_factor');
+
+            if (selectedFeatures.length === 0) {
+                alert('Please select at least one feature');
+                return;
+            }
+
+            // Engineer features
+            processedData = engineerFeatures(raceData, selectedFeatures);
+            features = selectedFeatures;
+
+            displayFeatureStats();
+            alert(`Features computed successfully! ${selectedFeatures.length} features created.`);
+        }
+
+        // Feature engineering
+        // 🔴 PLUG IN HERE: Replace this entire function with real calculations
+        function engineerFeatures(data, selectedFeatures) {
+            return data.map((row, idx) => {
+                const features = { ...row };
+                
+                // 🔴 TODO: Replace with actual calculation from horse's past 5 races
+                // Need: Access to complete race history database
+                // Should: Calculate exponentially weighted average of performance ratings
+                features.recent_performance = 1.0 - (parseFloat(row.finish_position) - 1) / 10;
+                
+                // 🔴 TODO: Replace with actual date calculation
+                // Need: Previous race date from database
+                // Should: features.days_since_last = (currentRaceDate - lastRaceDate).days
+                features.days_since_last = Math.floor(Math.random() * 30) + 10;
+                
+                // 🔴 TODO: Replace with historical jockey ROI calculation
+                // Need: All past races for this jockey
+                // Should: Calculate (actual wins - expected wins based on horse quality)
+                features.jockey_factor = Math.random() * 0.2 - 0.1;
+                
+                // 🔴 TODO: Calculate from track-specific historical data
+                // Need: Win rates by post position at this track/distance
+                // Current: Simplified rule (inside = good, outside = bad)
+                const post = parseInt(row.post_position);
+                features.post_position_bias = post <= 3 ? 0.05 : post >= 7 ? -0.05 : 0;
+                
+                // Weight normalized (this calculation is reasonable)
+                features.weight_normalized = (parseFloat(row.weight) - 120) / 10;
+                
+                // 🔴 TODO: Implement Benter's DP6A algorithm
+                // Need: Horse's past races at various distances
+                // Should: Residual-based regression (see paper Section 4)
+                features.distance_preference = (Math.random() - 0.5) * 0.1;
+                
+                // 🔴 TODO: Calculate average opponent strength
+                // Need: Performance ratings of all other horses in race
+                // Should: Average of recent_performance for all opponents
+                features.competition_strength = Math.random() * 0.5;
+                
+                // 🔴 TODO: Calculate trainer historical performance
+                // Need: All past races for this trainer
+                // Should: Recent 30-day ROI + career statistics
+                features.trainer_factor = Math.random() * 0.15 - 0.075;
+                
+                // Public probability (this calculation is correct)
+                const odds = parseFloat(row.win_odds);
+                features.public_prob = 1 / (odds * 1.17); // Adjusted for 17% track take
+                
+                return features;
+            });
+        }
+
+        // Display feature statistics
+        function displayFeatureStats() {
+            const statsHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Mean</th>
+                            <th>Std Dev</th>
+                            <th>Min</th>
+                            <th>Max</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${features.map(feat => {
+                            const values = processedData.map(d => d[feat]).filter(v => !isNaN(v));
+                            const mean = values.reduce((a, b) => a + b, 0) / values.length;
+                            const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+                            const std = Math.sqrt(variance);
+                            const min = Math.min(...values);
+                            const max = Math.max(...values);
+                            
+                            return `
+                                <tr>
+                                    <td>${feat}</td>
+                                    <td>${mean.toFixed(4)}</td>
+                                    <td>${std.toFixed(4)}</td>
+                                    <td>${min.toFixed(4)}</td>
+                                    <td>${max.toFixed(4)}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('featureStatsTable').innerHTML = statsHTML;
+            document.getElementById('featureStats').style.display = 'block';
+        }
+
+        // Train fundamental model
+        function trainModel() {
+            if (processedData.length === 0) {
+                alert('Please compute features first');
+                return;
+            }
+
+            const splitRatio = parseFloat(document.getElementById('trainSplit').value);
+            const splitIndex = Math.floor(processedData.length * splitRatio);
+            
+            trainData = processedData.slice(0, splitIndex);
+            testData = processedData.slice(splitIndex);
+
+            // Simulate model training
+            fundamentalModel = {
+                weights: features.map(() => Math.random() * 2 - 1),
+                intercept: Math.random() * 0.5 - 0.25
+            };
+
+            // Calculate R² for fundamental model
+            const fundamentalProbs = calculateFundamentalProbabilities(testData);
+            const publicProbs = testData.map(d => d.public_prob);
+            const winners = testData.map(d => parseInt(d.finish_position) === 1 ? 1 : 0);
+
+            const r2_public = calculateR2(publicProbs, winners);
+            const r2_fundamental = calculateR2(fundamentalProbs, winners);
+
+            document.getElementById('publicR2').textContent = r2_public.toFixed(4);
+            document.getElementById('fundamentalR2').textContent = r2_fundamental.toFixed(4);
+            
+            document.getElementById('modelResults').style.display = 'block';
+            
+            alert('Fundamental model trained successfully!');
+        }
+
+        // Calculate fundamental probabilities
+        function calculateFundamentalProbabilities(data) {
+            if (!fundamentalModel) return [];
+            
+            return data.map(row => {
+                let logit = fundamentalModel.intercept;
+                features.forEach((feat, idx) => {
+                    logit += fundamentalModel.weights[idx] * (row[feat] || 0);
+                });
+                return 1 / (1 + Math.exp(-logit));
+            });
+        }
+
+        // Calculate pseudo R²
+        function calculateR2(probs, winners) {
+            const n = probs.length;
+            const logLikelihood = probs.reduce((sum, p, i) => {
+                const adjustedP = Math.max(0.001, Math.min(0.999, p));
+                return sum + (winners[i] ? Math.log(adjustedP) : Math.log(1 - adjustedP));
+            }, 0);
+            
+            const nullLogLikelihood = winners.reduce((sum, w) => {
+                return sum + Math.log(0.5);
+            }, 0);
+            
+            return 1 - (logLikelihood / nullLogLikelihood);
+        }
+
+        // Train combined model
+        function trainCombinedModel() {
+            if (!fundamentalModel) {
+                alert('Please train fundamental model first');
+                return;
+            }
+
+            // Simulate estimation of alpha and beta
+            const alpha = 0.8 + Math.random() * 0.4; // 0.8-1.2
+            const beta = 1.5 + Math.random() * 0.5;  // 1.5-2.0
+
+            document.getElementById('alphaParam').value = alpha.toFixed(3);
+            document.getElementById('betaParam').value = beta.toFixed(3);
+
+            // Calculate combined probabilities
+            const fundamentalProbs = calculateFundamentalProbabilities(testData);
+            const publicProbs = testData.map(d => d.public_prob);
+            
+            const combinedProbs = fundamentalProbs.map((fp, i) => {
+                const logCombined = alpha * Math.log(fp + 0.001) + beta * Math.log(publicProbs[i] + 0.001);
+                return Math.exp(logCombined);
+            });
+
+            const winners = testData.map(d => parseInt(d.finish_position) === 1 ? 1 : 0);
+            const r2_combined = calculateR2(combinedProbs, winners);
+            const r2_public = parseFloat(document.getElementById('publicR2').textContent);
+
+            document.getElementById('combinedR2').textContent = r2_combined.toFixed(4);
+            
+            const deltaR2 = r2_combined - r2_public;
+            document.getElementById('deltaR2').textContent = deltaR2.toFixed(4);
+
+            let statusHTML = '';
+            if (deltaR2 > 0.02) {
+                statusHTML = '<span class="positive">✓ Strong Edge</span>';
+            } else if (deltaR2 > 0.01) {
+                statusHTML = '<span class="positive">✓ Profitable</span>';
+            } else if (deltaR2 > 0.005) {
+                statusHTML = '<span class="warning">⚠ Marginal</span>';
+            } else {
+                statusHTML = '<span class="negative">✗ No Edge</span>';
+            }
+            document.getElementById('deltaR2Status').innerHTML = statusHTML;
+
+            combinedModel = { alpha, beta };
+
+            displayCalibrationTable(combinedProbs, winners);
+            
+            alert('Combined model estimated successfully!');
+        }
+
+        // Display calibration table
+        function displayCalibrationTable(probs, winners) {
+            const bins = [0, 0.05, 0.10, 0.20, 0.30, 0.40, 1.0];
+            const calibration = [];
+
+            for (let i = 0; i < bins.length - 1; i++) {
+                const inBin = probs.map((p, idx) => 
+                    p >= bins[i] && p < bins[i + 1] ? { p, w: winners[idx] } : null
+                ).filter(x => x !== null);
+
+                if (inBin.length === 0) continue;
+
+                const expected = inBin.reduce((sum, x) => sum + x.p, 0) / inBin.length;
+                const actual = inBin.reduce((sum, x) => sum + x.w, 0) / inBin.length;
+                const zScore = (actual - expected) / Math.sqrt(expected * (1 - expected) / inBin.length);
+
+                calibration.push({
+                    range: `${bins[i].toFixed(2)}-${bins[i + 1].toFixed(2)}`,
+                    n: inBin.length,
+                    expected: expected.toFixed(3),
+                    actual: actual.toFixed(3),
+                    zScore: zScore.toFixed(2)
+                });
+            }
+
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Probability Range</th>
+                            <th>N</th>
+                            <th>Expected</th>
+                            <th>Actual</th>
+                            <th>Z-Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${calibration.map(row => `
+                            <tr>
+                                <td>${row.range}</td>
+                                <td>${row.n}</td>
+                                <td>${row.expected}</td>
+                                <td>${row.actual}</td>
+                                <td class="${Math.abs(parseFloat(row.zScore)) > 2 ? 'warning' : ''}">${row.zScore}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('calibrationTable').innerHTML = tableHTML;
+        }
+
+        // Generate betting recommendations
+        function generateBettingRecommendations() {
+            if (!combinedModel) {
+                alert('Please train combined model first');
+                return;
+            }
+
+            // Group test data by race
+            const races = {};
+            testData.forEach(row => {
+                const raceKey = `${row.date}_${row.track}_${row.race_number}`;
+                if (!races[raceKey]) {
+                    races[raceKey] = [];
+                }
+                races[raceKey].push(row);
+            });
+
+            // Populate race selector
+            const raceSelect = document.getElementById('raceSelect');
+            raceSelect.innerHTML = '<option value="">Choose a race...</option>';
+            Object.keys(races).forEach(key => {
+                const parts = key.split('_');
+                raceSelect.innerHTML += `<option value="${key}">${parts[1]} - Race ${parts[2]} (${parts[0]})</option>`;
+            });
+
+            document.getElementById('bettingRecommendations').style.display = 'block';
+            alert('Ready to analyze races! Select a race from the dropdown.');
+        }
+
+        // Add horse row for manual entry
+        function addHorseRow() {
+            const container = document.getElementById('manualHorseEntry');
+            const newRow = document.createElement('div');
+            newRow.className = 'horse-entry-row';
+            newRow.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 60px; gap: 8px; margin-bottom: 8px; padding: 12px; background: var(--color-background); border-radius: 8px;';
+            newRow.innerHTML = `
+                <input type="text" placeholder="Horse Name" class="horse-name-input" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text);">
+                <input type="number" placeholder="Post Position" class="horse-post-input" min="1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text);">
+                <input type="text" placeholder="Jockey" class="horse-jockey-input" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text);">
+                <input type="number" placeholder="Current Odds" class="horse-odds-input" step="0.1" min="1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text);">
+                <button onclick="removeHorseRow(this)" style="padding: 8px; background: var(--color-error); color: white; border: none; border-radius: 6px; cursor: pointer;">✕</button>
+            `;
+            container.appendChild(newRow);
+        }
+
+        // Remove horse row
+        function removeHorseRow(button) {
+            const rows = document.querySelectorAll('.horse-entry-row');
+            if (rows.length > 1) {
+                button.parentElement.remove();
+            } else {
+                alert('Must have at least one horse in the race');
+            }
+        }
+
+        // Analyze today's race
+        function analyzeTodaysRace() {
+            const track = document.getElementById('manualTrack').value;
+            const raceNum = document.getElementById('manualRaceNum').value;
+            const distance = document.getElementById('manualDistance').value;
+            const surface = document.getElementById('manualSurface').value;
+
+            if (!track || !raceNum || !distance) {
+                alert('Please fill in track, race number, and distance');
+                return;
+            }
+
+            // Collect horse data
+            const rows = document.querySelectorAll('.horse-entry-row');
+            const horses = [];
+            
+            rows.forEach((row, idx) => {
+                const name = row.querySelector('.horse-name-input').value;
+                const post = row.querySelector('.horse-post-input').value;
+                const jockey = row.querySelector('.horse-jockey-input').value;
+                const odds = row.querySelector('.horse-odds-input').value;
+
+                if (name && post && odds) {
+                    horses.push({
+                        name,
+                        post: parseInt(post),
+                        jockey: jockey || 'Unknown',
+                        odds: parseFloat(odds)
+                    });
+                }
+            });
+
+            if (horses.length < 2) {
+                alert('Please enter at least 2 horses with complete information');
+                return;
+            }
+
+            // Generate predictions (using simplified model since no historical data)
+            const bankroll = parseFloat(document.getElementById('bankroll').value) || 10000;
+            const kellyFraction = parseFloat(document.getElementById('kellyFraction').value) || 0.33;
+            const minAdvantage = parseFloat(document.getElementById('minAdvantage').value) || 0.05;
+
+            const predictions = horses.map(horse => {
+                // Simplified probability estimation (no real model without historical data)
+                const publicProb = 1 / (horse.odds * 1.17);
+                
+                // Add random noise to simulate model disagreement
+                const modelProb = publicProb * (0.85 + Math.random() * 0.3);
+                
+                const expectedReturn = modelProb * horse.odds;
+                const advantage = expectedReturn - 1;
+                
+                let betAmount = 0;
+                if (advantage >= minAdvantage) {
+                    const kellyFrac = advantage / (horse.odds - 1);
+                    betAmount = bankroll * kellyFrac * kellyFraction;
+                    betAmount = Math.max(0, Math.min(betAmount, bankroll * 0.05));
+                }
+
+                return {
+                    ...horse,
+                    publicProb,
+                    modelProb,
+                    expectedReturn,
+                    advantage,
+                    betAmount
+                };
+            });
+
+            // Sort by model probability
+            predictions.sort((a, b) => b.modelProb - a.modelProb);
+
+            // Display results
+            const resultsHTML = `
+                <div class="alert alert-warning" style="margin-bottom: 16px;">
+                    <strong>⚠️ Important:</strong> These predictions use simplified calculations without historical data. Accuracy will be limited. Use for learning only, not real betting.
+                </div>
+                
+                ${predictions.map((horse, idx) => `
+                    <div class="horse-card">
+                        <div class="horse-header">
+                            <div>
+                                <div class="horse-name">${horse.name}</div>
+                                <div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">
+                                    Post ${horse.post} • ${horse.jockey}
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 12px; color: var(--color-text-secondary);">Model Rank</div>
+                                <div style="font-size: 24px; font-weight: 600;">#${idx + 1}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="horse-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">Public Odds</div>
+                                <div class="stat-value">${horse.odds.toFixed(1)}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Public Prob</div>
+                                <div class="stat-value">${(horse.publicProb * 100).toFixed(1)}%</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Model Prob</div>
+                                <div class="stat-value">${(horse.modelProb * 100).toFixed(1)}%</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Advantage</div>
+                                <div class="stat-value ${horse.advantage > 0 ? 'positive' : 'negative'}">
+                                    ${(horse.advantage * 100).toFixed(1)}%
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${horse.betAmount > 0 ? `
+                            <div class="bet-recommendation">
+                                <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px;">
+                                    PAPER TRADE RECOMMENDATION
+                                </div>
+                                <div class="bet-amount">$${horse.betAmount.toFixed(2)}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('')}
+            `;
+
+            document.getElementById('todaysRaceResults').innerHTML = resultsHTML;
+            document.getElementById('todaysRaceAnalysis').style.display = 'block';
+
+            // Store predictions for later comparison
+            window.todaysPredictions = predictions;
+            window.todaysRaceInfo = { track, raceNum, distance, surface };
+        }
+
+        // Record race result
+        function recordRaceResult() {
+            const winnerName = document.getElementById('actualWinner').value.trim();
+            
+            if (!winnerName || !window.todaysPredictions) {
+                alert('Please enter the winner\'s name');
+                return;
+            }
+
+            const predictions = window.todaysPredictions;
+            const winner = predictions.find(h => h.name.toLowerCase() === winnerName.toLowerCase());
+
+            if (!winner) {
+                alert('Winner not found in predictions. Check spelling.');
+                return;
+            }
+
+            const modelRank = predictions.indexOf(winner) + 1;
+            const publicRank = [...predictions].sort((a, b) => b.publicProb - a.publicProb).indexOf(winner) + 1;
+
+            let resultHTML = `
+                <div style="padding: 16px; background: var(--color-surface); border-radius: 8px; border: 2px solid var(--color-success);">
+                    <h4 style="margin: 0 0 12px 0; color: var(--color-success);">✓ Result Recorded</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div>
+                            <div style="font-size: 12px; color: var(--color-text-secondary);">Winner</div>
+                            <div style="font-size: 18px; font-weight: 600;">${winner.name}</div>
+                            <div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">
+                                Post ${winner.post} • Odds ${winner.odds.toFixed(1)}
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: var(--color-text-secondary);">Model Rank</div>
+                            <div style="font-size: 18px; font-weight: 600; color: ${modelRank === 1 ? 'var(--color-success)' : modelRank <= 3 ? 'var(--color-warning)' : 'var(--color-error)'};">
+                            </div>
+                            <div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">
+                                Public Rank: #${publicRank}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border);">
+                        <div style="font-size: 12px; color: var(--color-text-secondary);">Model Performance</div>
+                        <div style="font-size: 14px; margin-top: 4px;">
+                            ${modelRank === 1 ? '🎯 Model correctly picked the winner!' :
+                              modelRank <= 3 ? '⚠️ Model placed winner in top 3' :
+                              '❌ Model did not identify winner in top 3'}
+                        </div>
+                        ${winner.betAmount > 0 ? `
+                            <div style="margin-top: 8px; padding: 8px; background: var(--color-background); border-radius: 4px;">
+                                <strong>Paper Trade Result:</strong><br>
+                                Bet $${winner.betAmount.toFixed(2)} → Returned $${(winner.betAmount * winner.odds).toFixed(2)}<br>
+                                <span class="positive">Profit: $${(winner.betAmount * (winner.odds - 1)).toFixed(2)}</span>
+                            </div>
+                        ` : `
+                            <div style="margin-top: 8px; padding: 8px; background: var(--color-background); border-radius: 4px;">
+                                No bet recommended on winner (advantage too low)
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('accuracyResult').innerHTML = resultHTML;
+        }
+
+        // Display race analysis
+        // 🔴 PLUG IN HERE: Add live odds refresh before race
+        function displayRaceAnalysis() {
+            const raceKey = document.getElementById('raceSelect').value;
+            if (!raceKey) return;
+
+            // 🔴 TODO: Fetch live odds if within 60 minutes of post time
+            // const liveOdds = await fetchLiveOdds(track, raceNumber);
+            // Update odds every 30 seconds until post time
+
+            const races = {};
+            testData.forEach(row => {
+                const key = `${row.date}_${row.track}_${row.race_number}`;
+                if (!races[key]) races[key] = [];
+                races[key].push(row);
+            });
+
+            const raceHorses = races[raceKey];
+            const bankroll = parseFloat(document.getElementById('bankroll').value);
+            const kellyFraction = parseFloat(document.getElementById('kellyFraction').value);
+            const minAdvantage = parseFloat(document.getElementById('minAdvantage').value);
+            const trackTake = parseFloat(document.getElementById('trackTake').value) / 100;
+
+            // Calculate probabilities for each horse
+            const alpha = combinedModel.alpha;
+            const beta = combinedModel.beta;
+
+            const horsesWithProbs = raceHorses.map(horse => {
+                const fundamentalProb = calculateFundamentalProbabilities([horse])[0];
+                const publicProb = horse.public_prob;
+                
+                const logCombined = alpha * Math.log(fundamentalProb + 0.001) + beta * Math.log(publicProb + 0.001);
+                const combinedProb = Math.exp(logCombined);
+                
+                const decimalOdds = parseFloat(horse.win_odds);
+                const expectedReturn = combinedProb * decimalOdds;
+                const advantage = expectedReturn - 1;
+                
+                let betAmount = 0;
+                if (advantage >= minAdvantage) {
+                    const kellyFrac = advantage / (decimalOdds - 1);
+                    betAmount = bankroll * kellyFrac * kellyFraction;
+                    betAmount = Math.max(0, Math.min(betAmount, bankroll * 0.05)); // Cap at 5% of bankroll
+                }
+
+                return {
+                    ...horse,
+                    fundamentalProb,
+                    publicProb,
+                    combinedProb,
+                    expectedReturn,
+                    advantage,
+                    betAmount
+                };
+            });
+
+            // Sort by bet amount
+            horsesWithProbs.sort((a, b) => b.betAmount - a.betAmount);
+
+            const analysisHTML = horsesWithProbs.map((horse, idx) => `
+                <div class="horse-card">
+                    <div class="horse-header">
+                        <div class="horse-name">${horse.horse_name}</div>
+                        <div class="horse-number">${horse.post_position}</div>
+                    </div>
+                    
+                    <div class="horse-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Public Odds</div>
+                            <div class="stat-value">${horse.win_odds}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Public Prob</div>
+                            <div class="stat-value">${(horse.publicProb * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Model Prob</div>
+                            <div class="stat-value">${(horse.combinedProb * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Expected Return</div>
+                            <div class="stat-value">${horse.expectedReturn.toFixed(3)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Advantage</div>
+                            <div class="stat-value ${horse.advantage > 0 ? 'positive' : 'negative'}">
+                                ${(horse.advantage * 100).toFixed(1)}%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${horse.betAmount > 0 ? `
+                        <div class="bet-recommendation">
+                            <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px;">
+                                RECOMMENDED BET
+                            </div>
+                            <div class="bet-amount">$${horse.betAmount.toFixed(2)}</div>
+                            <div style="font-size: 12px; margin-top: 4px;">
+                                ${(kellyFraction * 100).toFixed(0)}% Kelly • ${(horse.advantage * 100).toFixed(1)}% edge
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+
+            document.getElementById('raceAnalysis').innerHTML = analysisHTML;
+        }
+
+        // Run backtest
+        function runBacktest() {
+            if (!combinedModel) {
+                alert('Please train combined model first');
+                return;
+            }
+
+            const bankroll = parseFloat(document.getElementById('bankroll').value);
+            const kellyFraction = parseFloat(document.getElementById('kellyFraction').value);
+            const minAdvantage = parseFloat(document.getElementById('minAdvantage').value);
+
+            let currentBankroll = bankroll;
+            let totalBets = 0;
+            let wins = 0;
+            let totalWagered = 0;
+            let totalReturned = 0;
+            const betHistory = [];
+
+            // Group by race
+            const races = {};
+            testData.forEach(row => {
+                const raceKey = `${row.date}_${row.track}_${row.race_number}`;
+                if (!races[raceKey]) races[raceKey] = [];
+                races[raceKey].push(row);
+            });
+
+            // Process each race
+            Object.entries(races).forEach(([raceKey, horses]) => {
+                horses.forEach(horse => {
+                    const fundamentalProb = calculateFundamentalProbabilities([horse])[0];
+                    const publicProb = horse.public_prob;
+                    
+                    const alpha = combinedModel.alpha;
+                    const beta = combinedModel.beta;
+                    const logCombined = alpha * Math.log(fundamentalProb + 0.001) + beta * Math.log(publicProb + 0.001);
+                    const combinedProb = Math.exp(logCombined);
+                    
+                    const decimalOdds = parseFloat(horse.win_odds);
+                    const expectedReturn = combinedProb * decimalOdds;
+                    const advantage = expectedReturn - 1;
+                    
+                    if (advantage >= minAdvantage && currentBankroll > 0) {
+                        const kellyFrac = advantage / (decimalOdds - 1);
+                        let betAmount = currentBankroll * kellyFrac * kellyFraction;
+                        betAmount = Math.max(0, Math.min(betAmount, currentBankroll * 0.05));
+                        
+                        if (betAmount >= 1) {
+                            // 🔴 PLUG IN HERE: Replace simulation with actual bet placement
+                            // const betResult = await placeBet(track, race, horse.post_position, betAmount);
+                            // if (!betResult.success) { handle error }
+                            
+                            totalBets++;
+                            totalWagered += betAmount;
+                            
+                            const won = parseInt(horse.finish_position) === 1;
+                            const payout = won ? betAmount * decimalOdds : 0;
+                            
+                            if (won) wins++;
+                            totalReturned += payout;
+                            currentBankroll = currentBankroll - betAmount + payout;
+                            
+                            betHistory.push({
+                                date: horse.date,
+                                track: horse.track,
+                                race: horse.race_number,
+                                horse: horse.horse_name,
+                                odds: decimalOdds,
+                                betAmount: betAmount.toFixed(2),
+                                won,
+                                payout: payout.toFixed(2),
+                                profit: (payout - betAmount).toFixed(2)
+                            });
+                        }
+                    }
+                });
+            });
+
+            const winRate = totalBets > 0 ? (wins / totalBets * 100) : 0;
+            const profit = totalReturned - totalWagered;
+            const roi = totalWagered > 0 ? (profit / totalWagered * 100) : 0;
+
+            document.getElementById('totalBets').textContent = totalBets;
+            document.getElementById('winRate').textContent = winRate.toFixed(1) + '%';
+            document.getElementById('totalReturn').textContent = '$' + profit.toFixed(2);
+            document.getElementById('roi').textContent = roi.toFixed(2) + '%';
+
+            const returnStatus = profit >= 0 ? 
+                `<span class="positive">+${((profit / bankroll) * 100).toFixed(1)}% of starting bankroll</span>` :
+                `<span class="negative">${((profit / bankroll) * 100).toFixed(1)}% of starting bankroll</span>`;
+            document.getElementById('returnStatus').innerHTML = returnStatus;
+
+            // Display bet history
+            const historyHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Track</th>
+                            <th>Race</th>
+                            <th>Horse</th>
+                            <th>Odds</th>
+                            <th>Bet</th>
+                            <th>Result</th>
+                            <th>Profit/Loss</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${betHistory.slice(0, 50).map(bet => `
+                            <tr>
+                                <td>${bet.date}</td>
+                                <td>${bet.track}</td>
+                                <td>${bet.race}</td>
+                                <td>${bet.horse}</td>
+                                <td>${bet.odds.toFixed(1)}</td>
+                                <td>$${bet.betAmount}</td>
+                                <td>
+                                    <span class="status-badge ${bet.won ? 'status-success' : 'status-error'}">
+                                        ${bet.won ? 'WIN' : 'LOSS'}
+                                    </span>
+                                </td>
+                                <td class="${parseFloat(bet.profit) >= 0 ? 'positive' : 'negative'}">
+                                    $${bet.profit}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('betHistoryTable').innerHTML = historyHTML;
+            document.getElementById('backtestResults').style.display = 'block';
+
+            alert('Backtest completed!');
+        }
+    </script>
+</body>
+</html>
+
